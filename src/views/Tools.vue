@@ -1,37 +1,21 @@
 <template>
-     <v-app dark>
+   <v-app dark>
       <v-navigation-drawer clipped fixed v-model="drawer" app>
-         <ActionList :actions="actions" v-on:action="safeExecute"></ActionList>
-         <Settings></Settings>
       </v-navigation-drawer>
       <v-toolbar app fixed clipped-left dense class="toolbar">
          <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
          <v-toolbar-title>String Tools</v-toolbar-title>
          <v-spacer></v-spacer>
-         <UserAuthPane></UserAuthPane>
          <v-toolbar-items>
          </v-toolbar-items>
       </v-toolbar>
       <v-content>
-         <Editor ref="textareaContainer"></Editor>
-         <ErrorToaster></ErrorToaster>
-         <v-snackbar v-model="showCopy" top>
-            <span><v-icon class="snackbarIcon">content_copy</v-icon><small>Text copied...</small></span>
-         </v-snackbar>
       </v-content>
    </v-app>
 </template>
 
 <script>
 	import { mapState } from 'vuex';
-	import store from '../store';
-  import formatUtil from '@/js/FormatUtil'
-	import ActionList from '@/components/ActionList.vue'
-	import ErrorToaster from '@/components/ErrorToaster.vue'
-	import Settings from '@/components/Settings.vue'
-	import Editor from '@/components/Editor.vue'
-	import UserAuthPane from '@/components/UserAuthPane.vue'
-
 
 	function debounce(ms) {
 		let timer = 0;
@@ -46,6 +30,13 @@
 	}
 
 	let copyDebouncer = debounce(400);
+
+	import formatUtil from '../js/FormatUtil'
+	import ActionList from './ActionList.vue'
+	import ErrorToaster from './ErrorToaster.vue'
+	import Settings from './Settings.vue'
+	import Editor from './Editor.vue'
+	import UserAuthPane from './UserAuthPane.vue'
 
 	export default {
 		components: {

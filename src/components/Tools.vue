@@ -1,5 +1,5 @@
 <template>
-     <v-app dark>
+   <v-app dark>
       <v-navigation-drawer clipped fixed v-model="drawer" app>
          <ActionList :actions="actions" v-on:action="safeExecute"></ActionList>
          <Settings></Settings>
@@ -25,13 +25,6 @@
 <script>
 	import { mapState } from 'vuex';
 	import store from '../store';
-  import formatUtil from '@/js/FormatUtil'
-	import ActionList from '@/components/ActionList.vue'
-	import ErrorToaster from '@/components/ErrorToaster.vue'
-	import Settings from '@/components/Settings.vue'
-	import Editor from '@/components/Editor.vue'
-	import UserAuthPane from '@/components/UserAuthPane.vue'
-
 
 	function debounce(ms) {
 		let timer = 0;
@@ -46,6 +39,13 @@
 	}
 
 	let copyDebouncer = debounce(400);
+
+	import formatUtil from '../js/FormatUtil'
+	import ActionList from './ActionList.vue'
+	import ErrorToaster from './ErrorToaster.vue'
+	import Settings from './Settings.vue'
+	import Editor from './Editor.vue'
+	import UserAuthPane from './UserAuthPane.vue'
 
 	export default {
 		components: {
