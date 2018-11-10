@@ -11,4 +11,13 @@ export default class FormatXmlAction extends StringAction {
   execute(value) {
     return formatXml(value);
   }
+
+  isShortKey(key) {
+    return (key.ctrlKey && key.shiftKey && key.keyCode === 70);
+  }
+
+  getShortCut() {
+    return 'ctrl-shift-f';
+  }
+
 }

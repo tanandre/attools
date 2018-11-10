@@ -11,4 +11,12 @@ export default class FormatJsonAction extends StringAction {
   execute(value) {
     return formatJson(value);
   }
+
+  isShortKey(key) {
+    return (key.ctrlKey && key.shiftKey && key.keyCode === 70);
+  }
+
+  getShortCut() {
+    return 'ctrl-shift-f';
+  }
 }

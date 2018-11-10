@@ -8,4 +8,13 @@ export default class DecodeBase64Action extends StringAction {
   execute(value) {
     return atob(value);
   }
+
+  isShortKey(key) {
+    return (key.ctrlKey && key.shiftKey && key.keyCode === 221);
+  }
+
+  getShortCut() {
+    return 'ctrl-shift-]';
+  }
+
 }

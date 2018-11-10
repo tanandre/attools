@@ -10,7 +10,7 @@
          </v-list-tile-content>
          <v-list-tile-action>
             <v-list-tile-sub-title>
-               <small class="shortKey">{{action.shortKey}}</small>
+               <small class="shortKey">{{action.getShortCut()}}</small>
             </v-list-tile-sub-title>
          </v-list-tile-action>
       </v-list-tile>

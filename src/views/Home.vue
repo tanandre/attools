@@ -71,19 +71,6 @@
 				showTextarea: true,
 				isEdge: isEdge(),
         actions: actions,
-				actions_old: [
-					{ label: 'encode URL', icon: 'cloud', shortKey: 'ctrl-[', action: encodeURIComponent },
-					{ label: 'decode URL', icon: 'cloud_queue', shortKey: 'ctrl-shift-[', action: decodeURIComponent },
-					{ label: 'encode Base64', icon: 'hdr_strong', shortKey: 'ctrl-]', action: btoa },
-					{ label: 'decode Base64', icon: 'hdr_weak', shortKey: 'ctrl-shift-]', action: atob },
-					// {
-					// 	label: 'format JSON',
-					// 	icon: 'format_line_spacing',
-					// 	shortKey: 'ctrl-shift-f',
-					// 	// action: formatUtil.formatJson
-					// },
-					// { label: 'format XML', icon: 'code', shortKey: 'ctrl-shift-f', action: formatUtil.formatXml }
-				]
 			}
 		},
 		computed: {
@@ -102,37 +89,11 @@
 				if (!txtValue) {
 					return;
 				}
+        const applicableActions = actions.filter(a => a.isShortKey(key));
 
-				// console.log(key, key.keyCode);
-				if (key.ctrlKey && key.shiftKey && key.keyCode === 70) {
-					let errors = [];
-					try {
-						this.$store.commit('textValue', formatUtil.formatJson(txtValue));
-					} catch (e) {
-						errors.push(e);
-					}
-					try {
-            this.$store.commit('textValue', formatUtil.formatXml(txtValue));
-					} catch (e) {
-						errors.push(e);
-					}
-
-					if (errors.length === 2) {
-						this.handleError(new Error('text not formatted: could not parse as JSON or XML'));
-					}
-					this.copyToClipboard();
-					return;
-				}
-
-				if (key.ctrlKey && !key.shiftKey && key.keyCode === 219) {
-					return this.safeExecute(encodeURIComponent);
-				} else if (key.ctrlKey && key.shiftKey && key.keyCode === 219) {
-					return this.safeExecute(decodeURIComponent);
-				} else if (key.ctrlKey && !key.shiftKey && key.keyCode === 221) {
-					return this.safeExecute(btoa);
-				} else if (key.ctrlKey && key.shiftKey && key.keyCode === 221) {
-					return this.safeExecute(atob);
-				}
+        applicableActions.forEach(action => {
+          this.safeExecute(action);
+        });
 			},
 
 			getTextArea() {

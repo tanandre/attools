@@ -12,4 +12,8 @@ export default class Action {
     return false;
   }
 
+  getShortCut() {
+    return '';
+  }
+
 }
