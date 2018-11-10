@@ -1,7 +1,7 @@
 <template>
    <v-list dense>
       <v-subheader>Actions</v-subheader>
-      <v-list-tile v-for="action in actions" @click="emitAction(action.action)">
+      <v-list-tile v-for="action in actions" @click="emitAction(action)">
          <v-list-tile-action>
             <v-icon>{{action.icon}}</v-icon>
          </v-list-tile-action>

@@ -14,7 +14,6 @@
       </v-toolbar>
       <v-content>
          <Editor ref="textareaContainer"></Editor>
-         <!-- <Output></Output> -->
          <ErrorToaster></ErrorToaster>
          <v-snackbar v-model="showCopy" top>
             <span><v-icon class="snackbarIcon">content_copy</v-icon><small>Text copied...</small></span>
@@ -32,7 +31,15 @@
 	import Settings from '@/components/Settings.vue'
 	import Editor from '@/components/Editor.vue'
 	import UserAuthPane from '@/components/UserAuthPane.vue'
-  import Output from '@/components/Output.vue'
+  import EncodeUrlAction from '@/js/actions/EncodeUrlAction';
+  import DecodeUrlAction from '@/js/actions/DecodeUrlAction';
+  import DecodeBase64Action from '@/js/actions/DecodeBase64Action';
+  import EncodeBase64Action from '@/js/actions/EncodeBase64Action';
+  import FormatJsonAction from '@/js/actions/FormatJsonAction';
+  import FormatXmlAction from '@/js/actions/FormatXmlAction';
+
+  const actions = [new EncodeUrlAction(), new DecodeUrlAction(),
+        new EncodeBase64Action(), new DecodeBase64Action(), new FormatJsonAction(), new FormatXmlAction()];
 
 
 	function debounce(ms) {
@@ -56,7 +63,6 @@
 			ActionList,
 			UserAuthPane,
 			Editor,
-Output,
 		},
 		data() {
 			return {
@@ -64,18 +70,19 @@ Output,
 				drawer: true,
 				showTextarea: true,
 				isEdge: isEdge(),
-				actions: [
+        actions: actions,
+				actions_old: [
 					{ label: 'encode URL', icon: 'cloud', shortKey: 'ctrl-[', action: encodeURIComponent },
 					{ label: 'decode URL', icon: 'cloud_queue', shortKey: 'ctrl-shift-[', action: decodeURIComponent },
 					{ label: 'encode Base64', icon: 'hdr_strong', shortKey: 'ctrl-]', action: btoa },
 					{ label: 'decode Base64', icon: 'hdr_weak', shortKey: 'ctrl-shift-]', action: atob },
-					{
-						label: 'format JSON',
-						icon: 'format_line_spacing',
-						shortKey: 'ctrl-shift-f',
-						action: formatUtil.formatJson
-					},
-					{ label: 'format XML', icon: 'code', shortKey: 'ctrl-shift-f', action: formatUtil.formatXml }
+					// {
+					// 	label: 'format JSON',
+					// 	icon: 'format_line_spacing',
+					// 	shortKey: 'ctrl-shift-f',
+					// 	// action: formatUtil.formatJson
+					// },
+					// { label: 'format XML', icon: 'code', shortKey: 'ctrl-shift-f', action: formatUtil.formatXml }
 				]
 			}
 		},
@@ -92,7 +99,6 @@ Output,
 			onKeyDown(key) {
 				// const ta = this.getTextArea();
         const txtValue = this.$store.state.textValue;
-        console.log('txt', txtValue);
 				if (!txtValue) {
 					return;
 				}
@@ -153,7 +159,7 @@ Output,
 				this.$store.commit('error', e);
 			},
 
-			safeExecute(fnc) {
+			safeExecute(action) {
 				this.error = null;
 				try {
           const txtValue = this.$store.state.textValue;
@@ -161,7 +167,7 @@ Output,
 					if (!txtValue) {
 						return;
 					}
-					let value = fnc(txtValue);
+					let value = action.execute(txtValue);
           this.$store.commit('textValue', value);
 					if (this.autoCopy) {
 						this.copyToClipboard();
