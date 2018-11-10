@@ -90,8 +90,10 @@ Output,
 		},
 		methods: {
 			onKeyDown(key) {
-				const ta = this.getTextArea();
-				if (!ta.value) {
+				// const ta = this.getTextArea();
+        const txtValue = this.$store.state.textValue;
+        console.log('txt', txtValue);
+				if (!txtValue) {
 					return;
 				}
 
@@ -99,12 +101,12 @@ Output,
 				if (key.ctrlKey && key.shiftKey && key.keyCode === 70) {
 					let errors = [];
 					try {
-						ta.value = formatUtil.formatJson(ta.value);
+						this.$store.commit('textValue', formatUtil.formatJson(txtValue));
 					} catch (e) {
 						errors.push(e);
 					}
 					try {
-						ta.value = formatUtil.formatXml(ta.value);
+            this.$store.commit('textValue', formatUtil.formatXml(txtValue));
 					} catch (e) {
 						errors.push(e);
 					}
@@ -134,14 +136,14 @@ Output,
 			copyToClipboard() {
 				const ta = this.getTextArea();
 				// attempt to add to undo buffer
-				ta.blur();
-				ta.focus();
+				// ta.blur();
+				// ta.focus();
 
-				ta.select();
+				// ta.select();
 				document.execCommand('copy');
 				copyDebouncer(() => {
-					ta.blur();
-					ta.focus();
+					// ta.blur();
+					// ta.focus();
 					this.showCopy = true;
 				});
 			},
@@ -154,17 +156,13 @@ Output,
 			safeExecute(fnc) {
 				this.error = null;
 				try {
-					const ta = this.getTextArea();
-					if (!ta.value) {
+          const txtValue = this.$store.state.textValue;
+					// const ta = this.getTextArea();
+					if (!txtValue) {
 						return;
 					}
-
-					// attempt to add to undo buffer
-					ta.blur();
-					ta.focus();
-
-					let value = fnc(ta.value);
-					ta.value = value;
+					let value = fnc(txtValue);
+          this.$store.commit('textValue', value);
 					if (this.autoCopy) {
 						this.copyToClipboard();
 					}

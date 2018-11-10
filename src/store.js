@@ -12,12 +12,16 @@ const store = new Vuex.Store({
 		session: sessionModule
 	},
 	state: {
-		error: null
+		error: null,
+    textValue: null,
 	},
 	mutations: {
 		error (state, error) {
 			state.error = error;
-		}
+		},
+    textValue (state, value) {
+      state.textValue = value;
+    }
 	},
 	actions: {}
 });
