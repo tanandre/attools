@@ -1,94 +1,77 @@
 <template>
-   <textarea
-           @blur="onTextAreaBlur()"
-           class="textarea"
-           :class="{nowrap: !wordWrap}"
-           v-show="showTextarea"
-           autofocus
-   ></textarea>
+  <v-textarea @blur="onTextAreaBlur()" class="textarea" :class="{nowrap: !wordWrap}" full-width v-show="showTextarea" autofocus auto-grow></v-textarea>
 </template>
 
 <script>
-	import { mapState } from 'vuex';
+  import {
+    mapState
+  } from 'vuex';
 
-	export default {
-		name: 'editor',
-		data() {
-			return {
-				showTextarea: false,
-				showCopy: false,
-			}
-		},
-		computed: {
-			...mapState({
-				wordWrap: state => state.settings.wordWrap
-			}),
-		},
-		mounted() {
-			this.resizeTextArea();
-			setTimeout(() => {
-				this.getTextArea().focus();
-			}, 0);
-		},
-		methods: {
-			getTextArea() {
-				return this.$el;
-			},
+  export default {
+    name: 'editor',
+    data() {
+      return {
+        showTextarea: false,
+        showCopy: false,
+      }
+    },
+    computed: {
+      ...mapState({
+        wordWrap: state => state.settings.wordWrap
+      }),
+    },
+    mounted() {
+      this.resizeTextArea();
+      setTimeout(() => {
+        this.getTextArea().focus();
+      }, 0);
+    },
+    methods: {
+      getTextArea() {
+        return this.$el;
+      },
 
-			resizeTextArea() {
-				let ta = this.getTextArea();
-				ta.setAttribute('style', 'height:' + ta.parentNode.clientHeight + 'px');
-				this.showTextarea = true;
-			},
+      resizeTextArea() {
+        // let ta = this.getTextArea();
+        // ta.setAttribute('style', 'height:' + ta.parentNode.clientHeight + 'px');
+        this.showTextarea = true;
+      },
 
-			onTextAreaBlur() {
-				const ta = this.getTextArea();
-				setTimeout(() => {
-					ta.focus();
-				}, 100);
-			},
-		}
-	}
+      onTextAreaBlur() {
+        const ta = this.getTextArea();
+        setTimeout(() => {
+          ta.focus();
+        }, 100);
+      },
+    }
+  }
 </script>
 
 <style scoped>
-   .start textarea.linenumbers {
-      padding-left: 35px;
-      padding-top: 10px;
-      background: url(http://i.imgur.com/2cOaJ.png);
-      background-attachment: local;
-      background-repeat: no-repeat;
-   }
+  textarea,
+  pre {
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+  }
 
-   .start textarea {
-      width: 100%;
-      padding: 3px;
-      font-family: "Courier New";
-      margin: 0;
-      border: none;
-   }
+  /* turn off chrome textarea highlight */
+  .textarea:focus {
+    outline: none;
+  }
 
-   textarea,
-   pre {
-      -moz-tab-size: 4;
-      -o-tab-size: 4;
-      tab-size: 4;
-   }
+  .textarea {
+    width: 100%;
+    height: 100%;
+    font-family: Consolas, Lucida Console, Courier New, monospace;
+font-size: 10pt;
+  }
 
-   /* turn off chrome textarea highlight */
-   textarea:focus {
-      outline: none;
-   }
+  textarea.nowrap {
+    white-space: pre;
+  }
 
-   textarea {
-      overflow: auto;
-   }
-
-   textarea.nowrap {
-      white-space: pre;
-   }
-
-   .edge textarea.nowrap {
-      white-space: nowrap;
-   }
+  .edge textarea.nowrap {
+    white-space: nowrap;
+  }
 </style>

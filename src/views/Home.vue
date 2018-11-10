@@ -14,6 +14,7 @@
       </v-toolbar>
       <v-content>
          <Editor ref="textareaContainer"></Editor>
+         <!-- <Output></Output> -->
          <ErrorToaster></ErrorToaster>
          <v-snackbar v-model="showCopy" top>
             <span><v-icon class="snackbarIcon">content_copy</v-icon><small>Text copied...</small></span>
@@ -31,6 +32,7 @@
 	import Settings from '@/components/Settings.vue'
 	import Editor from '@/components/Editor.vue'
 	import UserAuthPane from '@/components/UserAuthPane.vue'
+  import Output from '@/components/Output.vue'
 
 
 	function debounce(ms) {
@@ -53,7 +55,8 @@
 			Settings,
 			ActionList,
 			UserAuthPane,
-			Editor
+			Editor,
+Output,
 		},
 		data() {
 			return {
