@@ -21,29 +21,27 @@
 </template>
 
 <script>
-	import { mapState } from 'vuex';
-
-	export default {
-		name: 'settings',
-		computed: {
-			wordWrap: {
-				get () {
-					return this.$store.state.settings.wordWrap;
-				},
-				set (value) {
-					this.$store.commit('wordWrap', value)
-				}
-			},
-			autoCopy: {
-				get () {
-					return this.$store.state.settings.autoCopy
-				},
-				set (value) {
-					this.$store.commit('autoCopy', value)
-				}
-			},
-		},
-	}
+export default {
+  name: 'settings',
+  computed: {
+    wordWrap: {
+      get() {
+        return this.$store.state.settings.wordWrap;
+      },
+      set(value) {
+        this.$store.commit('wordWrap', value);
+      },
+    },
+    autoCopy: {
+      get() {
+        return this.$store.state.settings.autoCopy;
+      },
+      set(value) {
+        this.$store.commit('autoCopy', value);
+      },
+    },
+  },
+};
 </script>
 
 <style scoped>

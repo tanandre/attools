@@ -1,10 +1,10 @@
 <template>
-<v-textarea @blur="onTextAreaBlur()" class="textarea" :class="{nowrap: !wordWrap}" full-width autofocus auto-grow v-model="textValue"></v-textarea>
+<v-textarea @blur="onTextAreaBlur()" class="textarea" :class="{'nowrap':  !wordWrap}" full-width autofocus auto-grow v-model="textValue"></v-textarea>
 </template>
 
 <script>
 import {
-  mapState
+  mapState,
 } from 'vuex';
 
 export default {
@@ -12,7 +12,7 @@ export default {
   data() {
     return {
       showCopy: false,
-    }
+    };
   },
   computed: {
     ...mapState({
@@ -23,9 +23,9 @@ export default {
         return this.$store.state.textValue;
       },
       set(value) {
-          this.$store.commit('textValue', value);
-      }
-    }
+        this.$store.commit('textValue', value);
+      },
+    },
   },
   mounted() {
     setTimeout(() => {
@@ -42,13 +42,13 @@ export default {
         ta.focus();
       }, 100);
     },
-  }
-}
+  },
+};
 </script>
 
-<style scoped>
-textarea,
-pre {
+<style>
+.textarea textarea,
+.textarea pre {
   -moz-tab-size: 4;
   -o-tab-size: 4;
   tab-size: 4;
@@ -66,11 +66,12 @@ pre {
   font-size: 10pt;
 }
 
-textarea.nowrap {
+.textarea.nowrap textarea {
   white-space: pre;
+  overflow-x: auto;
 }
 
-.edge textarea.nowrap {
+.edge .textarea.nowrap textarea {
   white-space: nowrap;
 }
 </style>

@@ -7,30 +7,30 @@
 </template>
 
 <script>
-	export default {
-		name: 'errorToaster',
-		props: [],
-		computed: {
-			error: {
-				get () {
-					return this.$store.state.error
-				},
-				set (error) {
-					this.$store.commit('error', error)
-				}
-			}
-		},
-		methods: {
-			displayError (error) {
-				if (error.message) {
-					return error.message;
-				} else if (error.stack) {
-					return error.stack;
-				}
-				return 'something went wrong';
-			}
-		}
-	}
+export default {
+  name: 'errorToaster',
+  props: [],
+  computed: {
+    error: {
+      get() {
+        return this.$store.state.error;
+      },
+      set(error) {
+        this.$store.commit('error', error);
+      },
+    },
+  },
+  methods: {
+    displayError(error) {
+      if (error.message) {
+        return error.message;
+      } if (error.stack) {
+        return error.stack;
+      }
+      return 'something went wrong';
+    },
+  },
+};
 </script>
 
 <style scoped>

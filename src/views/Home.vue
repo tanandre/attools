@@ -10,7 +10,9 @@
          <v-spacer></v-spacer>
          <UserAuthPane></UserAuthPane>
          <v-toolbar-items>
+           <CopyPasteBin></CopyPasteBin>
          </v-toolbar-items>
+
       </v-toolbar>
       <v-content>
          <Editor ref="textareaContainer"></Editor>
@@ -23,122 +25,92 @@
 </template>
 
 <script>
-	import { mapState } from 'vuex';
-	import store from '../store';
-  import formatUtil from '@/js/FormatUtil'
-	import ActionList from '@/components/ActionList.vue'
-	import ErrorToaster from '@/components/ErrorToaster.vue'
-	import Settings from '@/components/Settings.vue'
-	import Editor from '@/components/Editor.vue'
-	import UserAuthPane from '@/components/UserAuthPane.vue'
-  import EncodeUrlAction from '@/js/actions/EncodeUrlAction';
-  import DecodeUrlAction from '@/js/actions/DecodeUrlAction';
-  import DecodeBase64Action from '@/js/actions/DecodeBase64Action';
-  import EncodeBase64Action from '@/js/actions/EncodeBase64Action';
-  import FormatJsonAction from '@/js/actions/FormatJsonAction';
-  import FormatXmlAction from '@/js/actions/FormatXmlAction';
+import { mapState } from 'vuex';
+import ActionList from '@/components/ActionList.vue';
+import ErrorToaster from '@/components/ErrorToaster.vue';
+import Settings from '@/components/Settings.vue';
+import Editor from '@/components/Editor.vue';
+import CopyPasteBin from '@/components/CopyPasteBin.vue';
+import UserAuthPane from '@/components/UserAuthPane.vue';
+import actions from '@/js/actions';
 
-  const actions = [new EncodeUrlAction(), new DecodeUrlAction(),
-        new EncodeBase64Action(), new DecodeBase64Action(), new FormatJsonAction(), new FormatXmlAction()];
+function debounce(ms) {
+  let timer = 0;
+  return (callback) => {
+    clearTimeout(timer);
+    timer = setTimeout(callback, ms);
+  };
+}
 
+function isEdge() {
+  return /Edge\/\d./i.test(navigator.userAgent);
+}
 
-	function debounce(ms) {
-		let timer = 0;
-		return (callback) => {
-			clearTimeout(timer);
-			timer = setTimeout(callback, ms);
-		}
-	}
+const copyDebouncer = debounce(400);
 
-	function isEdge() {
-		return /Edge\/\d./i.test(navigator.userAgent);
-	}
+export default {
+  components: {
+    ErrorToaster,
+    Settings,
+    ActionList,
+    UserAuthPane,
+    Editor,
+    CopyPasteBin,
+  },
+  data() {
+    return {
+      showCopy: false,
+      drawer: true,
+      showTextarea: true,
+      isEdge: isEdge(),
+      actions,
+    };
+  },
+  computed: {
+    ...mapState({
+      user: state => state.session.user,
+      autoCopy: state => state.settings.autoCopy,
+    }),
+  },
+  mounted() {
+    window.addEventListener('keydown', this.onKeyDown);
+  },
+  methods: {
+    onKeyDown(key) {
+      const txtValue = this.$store.state.textValue;
+      if (!txtValue) {
+        return;
+      }
 
-	let copyDebouncer = debounce(400);
+      actions.filter(a => a.isShortKey(key)).forEach((action) => {
+        this.safeExecute(action);
+      });
+    },
 
-	export default {
-		components: {
-			ErrorToaster,
-			Settings,
-			ActionList,
-			UserAuthPane,
-			Editor,
-		},
-		data() {
-			return {
-				showCopy: false,
-				drawer: true,
-				showTextarea: true,
-				isEdge: isEdge(),
-        actions: actions,
-			}
-		},
-		computed: {
-			...mapState({
-				user: state => state.session.user,
-				autoCopy: state => state.settings.autoCopy
-			}),
-		},
-		mounted() {
-			window.addEventListener('keydown', this.onKeyDown)
-		},
-		methods: {
-			onKeyDown(key) {
-				// const ta = this.getTextArea();
-        const txtValue = this.$store.state.textValue;
-				if (!txtValue) {
-					return;
-				}
-        const applicableActions = actions.filter(a => a.isShortKey(key));
+    getTextArea() {
+      return this.$refs.textareaContainer.$el ? this.$refs.textareaContainer.$el : this.$refs.textareaContainer;
+    },
 
-        applicableActions.forEach(action => {
-          this.safeExecute(action);
-        });
-			},
+    copyToClipboard() {
+      const ta = this.getTextArea();
+      // attempt to add to undo buffer
+      // ta.blur();
+      // ta.focus();
 
-			getTextArea() {
-				return this.$refs['textareaContainer'].$el ? this.$refs['textareaContainer'].$el : this.$refs['textareaContainer'];
-			},
+      // ta.select();
+      document.execCommand('copy');
+      copyDebouncer(() => {
+        // ta.blur();
+        // ta.focus();
+        this.showCopy = true;
+      });
+    },
 
-			copyToClipboard() {
-				const ta = this.getTextArea();
-				// attempt to add to undo buffer
-				// ta.blur();
-				// ta.focus();
-
-				// ta.select();
-				document.execCommand('copy');
-				copyDebouncer(() => {
-					// ta.blur();
-					// ta.focus();
-					this.showCopy = true;
-				});
-			},
-
-			handleError(e) {
-				console.error(e);
-				this.$store.commit('error', e);
-			},
-
-			safeExecute(action) {
-				this.error = null;
-				try {
-          const txtValue = this.$store.state.textValue;
-					// const ta = this.getTextArea();
-					if (!txtValue) {
-						return;
-					}
-					let value = action.execute(txtValue);
-          this.$store.commit('textValue', value);
-					if (this.autoCopy) {
-						this.copyToClipboard();
-					}
-				} catch (e) {
-					this.handleError(e);
-				}
-			}
-		}
-	}
+    safeExecute(action) {
+      this.$store.dispatch('execute', action);
+    },
+  },
+};
 </script>
 
 <style scoped>
